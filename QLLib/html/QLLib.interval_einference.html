@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="resources/coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="resources/coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resources/config.js"></script>
+<script type="text/javascript" src="resources/coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="../">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+    <div id="main">
+<h1 class="libtitle">QLLib.interval_einference</h1>
+
+<div class="code">
+<span class="id" title="keyword">From</span> <span class="id" title="var">HB</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">structures</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">ssreflect</span> <span class="id" title="library">ssrfun</span> <span class="id" title="library">ssrbool</span> <span class="id" title="library">ssrnat</span> <span class="id" title="library">eqtype</span> <span class="id" title="library">choice</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">order</span> <span class="id" title="library">interval</span> <span class="id" title="library">ssralg</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">orderedzmod</span> <span class="id" title="library">numdomain</span> <span class="id" title="library">numfield</span> <span class="id" title="library">ssrint</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">all_ssreflect</span> <span class="id" title="library">ssralg</span> <span class="id" title="library">ssrint</span> <span class="id" title="library">ssrnum</span> <span class="id" title="library">matrix</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">interval</span> <span class="id" title="library">interval_inference</span> <span class="id" title="library">reals</span> <span class="id" title="library">rat</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">boolp</span> <span class="id" title="library">classical_sets</span> <span class="id" title="library">functions</span> <span class="id" title="library">mathcomp_extra</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">mathcomp</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">constructive_ereal</span> <span class="id" title="library">exp</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="module">Order.TTheory</span> <span class="id" title="module">GRing.Theory</span> <span class="id" title="module">Num.Theory</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab1"></a><h1 class="section">Interval Inference Contributions</h1>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Section</span> <a id="ereal_inv_interval" class="idref" href="#ereal_inv_interval"><span class="id" title="section">ereal_inv_interval</span></a>.<br/>
+<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">ring_scope</span>.<br/>
+<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">order_scope</span>.<br/>
+<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">ereal_scope</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Variable</span> <a id="ereal_inv_interval.R" class="idref" href="#ereal_inv_interval.R"><span class="id" title="variable">R</span></a>: <span class="id" title="abbreviation">realType</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Local Notation</span> <a id="ext_num_def" class="idref" href="#ext_num_def"><span class="id" title="abbreviation">ext_num_def</span></a> := (<span class="id" title="record">Itv.def</span> <span class="id" title="definition">ext_num_sem</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Local Notation</span> <a id="ext_num_spec" class="idref" href="#ext_num_spec"><span class="id" title="abbreviation">ext_num_spec</span></a> := (<span class="id" title="definition">Itv.spec</span> <span class="id" title="definition">ext_num_sem</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab2"></a><h2 class="section">Inversion for Extended Reals</h2>
+ If x is comparable to 0, then so is x^-1 
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a id="realIe" class="idref" href="#realIe"><span class="id" title="lemma">realIe</span></a>:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <a id="x:3" class="idref" href="#x:3"><span class="id" title="binder">x</span></a>: <span class="id" title="notation">\</span><span class="id" title="notation">bar</span> <a class="idref" href="QLLib.interval_einference.html#ereal_inv_interval.R"><span class="id" title="variable">R</span></a>, 0<span class="id" title="notation">%:</span><span class="id" title="notation">E</span> <span class="id" title="notation">&gt;=&lt;</span> <a class="idref" href="QLLib.interval_einference.html#x:3"><span class="id" title="variable">x</span></a> <a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> 0<span class="id" title="notation">%:</span><span class="id" title="notation">E</span> <span class="id" title="notation">&gt;=&lt;</span> <a class="idref" href="QLLib.interval_einference.html#x:3"><span class="id" title="variable">x</span></a><span class="id" title="notation">^-1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; <span class="id" title="var">x</span>. <span class="id" title="tactic">rewrite</span> /<span class="id" title="definition">Order.comparable</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; /<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#orP"><span class="id" title="lemma">orP</span></a> [<span class="id" title="var">Hnpos</span>|<span class="id" title="var">Hnneg</span>]; <span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#orP"><span class="id" title="lemma">orP</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">left</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">inve_ge0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">move</span>: <span class="id" title="var">Hnneg</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">Order.POrderTheory.le_eqVlt</span>. <span class="comment">(*&nbsp;How&nbsp;to&nbsp;import&nbsp;this?&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; /<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#orP"><span class="id" title="lemma">orP</span></a> [/<span class="id" title="definition">eqP</span> -&gt;|<span class="id" title="var">Hneg</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">left</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">inve0</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">specialize</span> (@<span class="id" title="lemma">leey</span> <a class="idref" href="QLLib.interval_einference.html#ereal_inv_interval.R"><span class="id" title="variable">R</span></a> (0<span class="id" title="notation">%:</span><span class="id" title="notation">E</span>)). <span class="comment">(*&nbsp;apply&nbsp;leey&nbsp;causes&nbsp;Rocq&nbsp;to&nbsp;diverge&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">right</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">have</span> <span class="id" title="var">Hinfe</span>: (<span class="id" title="var">x</span> <span class="id" title="notation">!=</span> <span class="id" title="notation">+</span><span class="id" title="notation">oo</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> -<span class="id" title="lemma">ltey</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">lt_le_trans</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">exact</span> <span class="id" title="var">Hneg</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">specialize</span> (@<span class="id" title="lemma">leey</span> <a class="idref" href="QLLib.interval_einference.html#ereal_inv_interval.R"><span class="id" title="variable">R</span></a> (0<span class="id" title="notation">%:</span><span class="id" title="notation">E</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">have</span> <span class="id" title="var">Hnon0</span>: (<span class="id" title="var">x</span> <span class="id" title="notation">!=</span> 0) <span class="id" title="tactic">by</span> <span class="id" title="tactic">move</span>: <span class="id" title="var">Hneg</span> =&gt; /<span class="id" title="lemma">lt_eqF</span> /<span class="id" title="definition">eqP</span> <span class="id" title="var">Hneg</span>; <span class="id" title="tactic">apply</span>/<span class="id" title="definition">eqP</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">inve_le0</span> //. <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span> <span class="id" title="lemma">ltW</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="keep_neg_strict_bound" class="idref" href="#keep_neg_strict_bound"><span class="id" title="definition">keep_neg_strict_bound</span></a> <a id="b:4" class="idref" href="#b:4"><span class="id" title="binder">b</span></a> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="QLLib.interval_einference.html#b:4"><span class="id" title="variable">b</span></a> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="constructor">BSide</span> <span class="id" title="var">b</span> 0%<span class="id" title="var">Z</span> =&gt; <span class="id" title="notation">+</span><span class="id" title="notation">oo</span>%<span class="id" title="var">O</span> <span class="comment">(*&nbsp;Needed&nbsp;because&nbsp;0^-1&nbsp;=&nbsp;+oo&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="constructor">BSide</span> <span class="id" title="var">b</span> (<span class="id" title="constructor">Negz</span> <span class="id" title="var">_</span>) =&gt; <span class="id" title="abbreviation">BLeft</span> 0%<span class="id" title="var">Z</span><br/>
+&nbsp;&nbsp;| <span class="id" title="constructor">BSide</span> <span class="id" title="var">_</span> (<span class="id" title="constructor">Posz</span> <span class="id" title="var">_</span>) =&gt; <span class="id" title="notation">+</span><span class="id" title="notation">oo</span>%<span class="id" title="var">O</span><br/>
+&nbsp;&nbsp;| <span class="id" title="constructor">BInfty</span> <span class="id" title="var">_</span> =&gt; <span class="id" title="notation">+</span><span class="id" title="notation">oo</span>%<span class="id" title="var">O</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="int_inve" class="idref" href="#int_inve"><span class="id" title="definition">int_inve</span></a> <a id="i:6" class="idref" href="#i:6"><span class="id" title="binder">i</span></a> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span>: <span class="id" title="constructor">Interval</span> <span class="id" title="var">l</span> <span class="id" title="var">u</span> := <a class="idref" href="QLLib.interval_einference.html#i:6"><span class="id" title="variable">i</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="constructor">Interval</span> (<span class="id" title="definition">IntItv.keep_nonneg_bound</span> <span class="id" title="var">l</span>) (<a class="idref" href="QLLib.interval_einference.html#keep_neg_strict_bound"><span class="id" title="definition">keep_neg_strict_bound</span></a> <span class="id" title="var">u</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Inference lemma for inversion 
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a id="ext_num_spec_div" class="idref" href="#ext_num_spec_div"><span class="id" title="lemma">ext_num_spec_div</span></a> <a id="xi:8" class="idref" href="#xi:8"><span class="id" title="binder">xi</span></a> (<a id="x:9" class="idref" href="#x:9"><span class="id" title="binder">x</span></a> : <a class="idref" href="QLLib.interval_einference.html#ext_num_def"><span class="id" title="abbreviation">ext_num_def</span></a> <a class="idref" href="QLLib.interval_einference.html#xi:8"><span class="id" title="variable">xi</span></a>) (<a id="r:10" class="idref" href="#r:10"><span class="id" title="binder">r</span></a> := <span class="id" title="definition">Itv.real1</span> <a class="idref" href="QLLib.interval_einference.html#int_inve"><span class="id" title="definition">int_inve</span></a> <a class="idref" href="QLLib.interval_einference.html#xi:8"><span class="id" title="variable">xi</span></a>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="QLLib.interval_einference.html#ext_num_spec"><span class="id" title="abbreviation">ext_num_spec</span></a> <a class="idref" href="QLLib.interval_einference.html#r:10"><span class="id" title="variable">r</span></a> (<a class="idref" href="QLLib.interval_einference.html#x:9"><span class="id" title="variable">x</span></a><span class="id" title="notation">%:</span><span class="id" title="notation">inum</span><span class="id" title="notation">^-1</span> : <span class="id" title="notation">\</span><span class="id" title="notation">bar</span> <a class="idref" href="QLLib.interval_einference.html#ereal_inv_interval.R"><span class="id" title="variable">R</span></a>).<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>: <span class="id" title="lemma">Itv.spec_real1</span> (<span class="id" title="projection">Itv.P</span> <span class="id" title="var">x</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">case</span>: <span class="id" title="var">x</span> =&gt; <span class="id" title="var">x</span> /= <span class="id" title="var">_</span> [<span class="id" title="var">l</span> <span class="id" title="var">u</span>]. <span class="id" title="tactic">rewrite</span> /<span class="id" title="definition">ext_num_sem</span> /=.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">move</span>=&gt; /<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#and3P"><span class="id" title="lemma">and3P</span></a>[<span class="id" title="var">xr</span> /= <span class="id" title="var">lx</span> <span class="id" title="var">xu</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#andP"><span class="id" title="lemma">andP</span></a>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span> <a class="idref" href="QLLib.interval_einference.html#realIe"><span class="id" title="lemma">realIe</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">in_itv</span>. <span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#andP"><span class="id" title="lemma">andP</span></a>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">b</span> <span class="id" title="var">i</span>|<span class="id" title="var">b</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">n</span>|<span class="id" title="var">n</span>] <span class="id" title="var">eqn</span>:<span class="id" title="var">Ei</span>; <span class="id" title="var">last</span> <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>; <span class="id" title="tactic">rewrite</span> <span class="id" title="definition">bnd_simp</span> /= <span class="id" title="tactic">in</span> <span class="id" title="var">lx</span>; <span class="id" title="tactic">rewrite</span> /= <span class="id" title="lemma">inve_ge0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">have</span> <span class="id" title="var">Hineq</span>: 0%<span class="id" title="var">R</span> <span class="id" title="notation">&lt;=</span> <span class="id" title="notation">(</span><span class="id" title="var">n</span><span class="id" title="notation">%:~</span><span class="id" title="notation">R</span><span class="id" title="notation">)%:</span><span class="id" title="notation">E</span> <span class="id" title="tactic">by</span> <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">by</span> <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">le_le_trans</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="lemma">ltW</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">le_lt_trans</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">destruct</span> <span class="id" title="var">u</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">b</span> <span class="id" title="var">i</span>|<span class="id" title="var">b</span>]; <span class="id" title="var">last</span> <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span> <span class="id" title="keyword">as</span> [[|<span class="id" title="var">n</span>]|<span class="id" title="var">n</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">by</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">by</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>; <span class="id" title="tactic">rewrite</span> <span class="id" title="definition">bnd_simp</span> /= <span class="id" title="tactic">in</span> <span class="id" title="var">xu</span>; <span class="id" title="tactic">rewrite</span> /= <span class="id" title="lemma">inve_lt0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="lemma">ltW</span> <span class="id" title="tactic">in</span> <span class="id" title="var">xu</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">le_lt_trans</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">exact</span> <span class="id" title="var">xu</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">by</span> <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">le_lt_trans</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">exact</span> <span class="id" title="var">xu</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="inve_inum" class="idref" href="#inve_inum"><span class="id" title="definition">inve_inum</span></a> <a id="xi:11" class="idref" href="#xi:11"><span class="id" title="binder">xi</span></a> (<a id="x:12" class="idref" href="#x:12"><span class="id" title="binder">x</span></a> : <a class="idref" href="QLLib.interval_einference.html#ext_num_def"><span class="id" title="abbreviation">ext_num_def</span></a> <a class="idref" href="QLLib.interval_einference.html#xi:11"><span class="id" title="variable">xi</span></a>) :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Itv.mk</span> (<a class="idref" href="QLLib.interval_einference.html#ext_num_spec_div"><span class="id" title="lemma">ext_num_spec_div</span></a> <span class="id" title="var">_</span> <a class="idref" href="QLLib.interval_einference.html#x:12"><span class="id" title="variable">x</span></a>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab3"></a><h2 class="section">Powers With Real Exponent and Extended Real Base</h2>
+
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="poweR_itv" class="idref" href="#poweR_itv"><span class="id" title="definition">poweR_itv</span></a> <a id="i:13" class="idref" href="#i:13"><span class="id" title="binder">i</span></a> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span>: <span class="id" title="constructor">Interval</span> <span class="id" title="var">l</span> <span class="id" title="var">u</span> := <a class="idref" href="QLLib.interval_einference.html#i:13"><span class="id" title="variable">i</span></a> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="constructor">Interval</span> (<span class="id" title="definition">IntItv.keep_pos_bound</span> <span class="id" title="var">l</span>) <span class="id" title="notation">+</span><span class="id" title="notation">oo</span>%<span class="id" title="var">O</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Lemma</span> <a id="ext_num_spec_poweR" class="idref" href="#ext_num_spec_poweR"><span class="id" title="lemma">ext_num_spec_poweR</span></a> (<a id="i:15" class="idref" href="#i:15"><span class="id" title="binder">i</span></a> : <span class="id" title="inductive">Itv.t</span>) (<a id="x:16" class="idref" href="#x:16"><span class="id" title="binder">x</span></a> : <a class="idref" href="QLLib.interval_einference.html#ext_num_def"><span class="id" title="abbreviation">ext_num_def</span></a> <a class="idref" href="QLLib.interval_einference.html#i:15"><span class="id" title="variable">i</span></a>) <a id="p:17" class="idref" href="#p:17"><span class="id" title="binder">p</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<a id="r:18" class="idref" href="#r:18"><span class="id" title="binder">r</span></a> := <span class="id" title="definition">powR_itv</span> <a class="idref" href="QLLib.interval_einference.html#i:15"><span class="id" title="variable">i</span></a>)  :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="QLLib.interval_einference.html#ext_num_spec"><span class="id" title="abbreviation">ext_num_spec</span></a> <a class="idref" href="QLLib.interval_einference.html#r:18"><span class="id" title="variable">r</span></a> (<a class="idref" href="QLLib.interval_einference.html#x:16"><span class="id" title="variable">x</span></a><span class="id" title="notation">%:</span><span class="id" title="notation">inum</span> <span class="id" title="notation">`^</span> <a class="idref" href="QLLib.interval_einference.html#p:17"><span class="id" title="variable">p</span></a> : <span class="id" title="notation">\</span><span class="id" title="notation">bar</span> <a class="idref" href="QLLib.interval_einference.html#ereal_inv_interval.R"><span class="id" title="variable">R</span></a>).<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> {}/<span class="id" title="var">r</span>. <span class="id" title="tactic">case</span>: <span class="id" title="var">i</span> <span class="id" title="var">x</span> =&gt; [|[<span class="id" title="var">l</span> <span class="id" title="var">u</span>]] <span class="id" title="var">x</span> /=; [<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#and3P"><span class="id" title="lemma">and3P</span></a>; <span class="id" title="tactic">rewrite</span> ?<span class="id" title="lemma">num_real</span>|].<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">case</span>: <span class="id" title="var">x</span> =&gt; [<span class="id" title="var">x</span> /=/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#and3P"><span class="id" title="lemma">and3P</span></a>[<span class="id" title="var">xr</span> <span class="id" title="var">lx</span> <span class="id" title="var">xu</span>]].<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> /<span class="id" title="definition">ext_num_sem</span> /=. <span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#andP"><span class="id" title="lemma">andP</span></a>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#orP"><span class="id" title="lemma">orP</span></a>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span> <span class="id" title="lemma">poweR_ge0</span>.<br/>
+&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">in_itv</span>. <span class="id" title="tactic">apply</span>/<a class="idref" href="http://rocq-prover.org/doc/V9.1.1/stdlib//Corelib.ssr.ssrbool.html#andP"><span class="id" title="lemma">andP</span></a>. <span class="id" title="tactic">split</span>; <span class="id" title="var">last</span> <span class="id" title="var">done</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">b</span> <span class="id" title="var">i</span>|<span class="id" title="var">b</span>]; <span class="id" title="var">last</span> <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span> <span class="id" title="keyword">as</span> [[|<span class="id" title="var">n</span>]|<span class="id" title="var">n</span>]; <span class="id" title="tactic">simpl</span>; <span class="id" title="var">last</span> <span class="id" title="var">done</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">first</span> <span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span> <span class="id" title="lemma">poweR_ge0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">apply</span> <span class="id" title="lemma">poweR_gt0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* <span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>; <span class="id" title="tactic">rewrite</span> <span class="id" title="definition">bnd_simp</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lx</span>; <span class="id" title="tactic">apply</span> <span class="id" title="lemma">poweR_gt0</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">lt_le_trans</span>; <span class="id" title="var">last</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">lx</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">lte_fin</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">eapply</span> <span class="id" title="lemma">le_lt_trans</span>; <span class="id" title="var">last</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">lx</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> <span class="id" title="tactic">rewrite</span> <span class="id" title="lemma">lee_fin</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Canonical</span> <a id="poweR_inum" class="idref" href="#poweR_inum"><span class="id" title="definition">poweR_inum</span></a> <a id="i:19" class="idref" href="#i:19"><span class="id" title="binder">i</span></a> (<a id="x:20" class="idref" href="#x:20"><span class="id" title="binder">x</span></a> : <a class="idref" href="QLLib.interval_einference.html#ext_num_def"><span class="id" title="abbreviation">ext_num_def</span></a> <a class="idref" href="QLLib.interval_einference.html#i:19"><span class="id" title="variable">i</span></a>) <a id="p:21" class="idref" href="#p:21"><span class="id" title="binder">p</span></a> :=<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Itv.mk</span> (<a class="idref" href="QLLib.interval_einference.html#ext_num_spec_poweR"><span class="id" title="lemma">ext_num_spec_poweR</span></a> <span class="id" title="var">_</span> <a class="idref" href="QLLib.interval_einference.html#x:20"><span class="id" title="variable">x</span></a> <a class="idref" href="QLLib.interval_einference.html#p:21"><span class="id" title="variable">p</span></a>).<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <a class="idref" href="QLLib.interval_einference.html#ereal_inv_interval"><span class="id" title="section">ereal_inv_interval</span></a>.<br/>
+</div>
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/coq-community/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>
